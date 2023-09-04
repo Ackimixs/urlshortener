@@ -1,4 +1,4 @@
-# testingexpress
+# url shortener
 
 To install dependencies:
 
@@ -9,7 +9,8 @@ bun install
 To run:
 
 ```bash
-bun run index.ts
+bun start
 ```
 
-This project was created using `bun init` in bun v0.8.1. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+very very very simple url shortener with vanillaJs, no auth
+only the url shortener is implemented, no url expiring, no url stats, no url deletion
