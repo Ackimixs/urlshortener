@@ -1,22 +1,19 @@
-import type { Url } from "@prisma/client";
-import type { ResponseData } from "../utils/Type";
+import { PrismaClient } from "@prisma/client";
 
-export default defineEventHandler(
-  async (event): Promise<ResponseData<Url | null>> => {
-    const { path } = getQuery(event) as { path: string };
+export default async (req: any, res: any, prisma: PrismaClient) => {
+  const long_url = req.query?.long_url || undefined;
+  const code = req.query?.code || undefined;
 
-    const url = await event.context.prisma.url.findUnique({
-      where: {
-        path,
-      },
-    });
+  const urlData = await prisma.url.findMany({
+    where: {
+      LongUrl: long_url,
+      Code: code,
+    },
+  });
 
-    return {
-      statusCode: 200,
-      body: {
-        data: url,
-      },
-      request: requestData(event),
-    };
-  }
-);
+  res.send({
+    body: {
+      url: urlData,
+    },
+  });
+};

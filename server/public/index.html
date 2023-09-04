@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="container">
+    <div>
+      <h1>Url Shortener</h1>
+      <div>
+        <input type="text" name="long_url" id="long_url" placeholder="longUrl">
+        <input type="text" name="code" id="code" placeholder="Code">
+        <button id="submit">Submit</button>
+      </div>
+      <p id="result">Result : </p>
+
+      <div id="listOfUrl">
+        <h1>List of Url</h1>
+        <table id="tableOfUrl">
+          <tr>
+            <th>id</th>
+            <th>Long url</th>
+            <th>Code</th>
+            <th>Go</th>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+#container {
+  display: grid;
+  height: 100%;
+  place-items: center;
+}
+
+tr, td, th, table {
+  border: 1px solid black;
+}
+</style>
+<script>
+
+  document.querySelector("#submit").addEventListener("click", async () => {
+    document.querySelector("#result").innerHTML = "Result : ";
+    const long_url = document.querySelector("#long_url").value;
+    const code = document.querySelector("#code").value;
+
+    console.log(long_url, code);
+
+    const url = await fetch("/api/url", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ long_url, code }),
+    });
+
+    const data = await url.json();
+
+    console.log(data);
+
+    document.querySelector("#result").innerHTML += window.location.href + data.body.url.Code;
+  });
+
+
+(async () => {
+  const tableOfUrl = document.querySelector("#tableOfUrl");
+
+  const url = await fetch("/api/url", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await url.json();
+
+  for (const urlData of data.body.url) {
+    console.log(urlData);
+    const tr = document.createElement("tr");
+    const tdId = document.createElement("td");
+    const tdLongUrl = document.createElement("td");
+    const tdCode = document.createElement("td");
+    const tdGo = document.createElement("td");
+
+    tdId.innerHTML = urlData.id;
+    tdLongUrl.innerHTML = urlData.LongUrl;
+    tdCode.innerHTML = urlData.Code;
+
+    tdGo.innerHTML = `<a href="${window.location.href}${urlData.Code}" target="__blank">Go</a>`;
+
+    tr.appendChild(tdId);
+    tr.appendChild(tdLongUrl);
+    tr.appendChild(tdCode);
+    tr.appendChild(tdGo);
+
+    tableOfUrl.appendChild(tr);
+  }
+})()
+
+</script>
+</html>
