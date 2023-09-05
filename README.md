@@ -8,3 +8,15 @@ for the moment :
 - [x] nuxt3
 - [x] c++, crow
 - [x] vannilaJs
+- [x] ktor (kotlin)
+- [ ] rust
+- [ ] go
+- [ ] nodejs
+- [ ] flask
+- [ ] django
+- [ ] spring
+- [ ] laravel
+- [ ] symfony
+- [ ] nextjs
+- [ ] sveltekit
+- [ ] c#
