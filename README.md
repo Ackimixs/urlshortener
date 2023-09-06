@@ -10,7 +10,7 @@ for the moment :
 - [x] vannilaJs
 - [x] ktor (kotlin)
 - [ ] rust
-- [ ] go
+- [x] go
 - [ ] nodejs
 - [ ] flask
 - [ ] django
