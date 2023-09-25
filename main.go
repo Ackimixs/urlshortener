@@ -13,8 +13,8 @@ import (
 )
 
 type Url struct {
-	long_url string `json:"long_url"`
-	code     string `json:"code"`
+	LongUrl string `json:"long_url"`
+	Code    string `json:"code"`
 }
 
 func main() {
@@ -38,6 +38,7 @@ func main() {
 	defer db.Close()
 
 	sqlStmt := `
+	DROP TABLE IF EXISTS url;
 	create table url (long_url text not null primary key, code text not null);
 	delete from url;
 	`
@@ -81,7 +82,7 @@ func main() {
 			var urls []Url
 			for rows.Next() {
 				var url Url
-				err = rows.Scan(&url.long_url, &url.code)
+				err = rows.Scan(&url.LongUrl, &url.Code)
 				if err != nil {
 					log.Fatal(err)
 					c.JSON(http.StatusNotFound, gin.H{
@@ -115,7 +116,7 @@ func main() {
 			defer rows.Close()
 			var url Url
 			for rows.Next() {
-				err = rows.Scan(&url.long_url, &url.code)
+				err = rows.Scan(&url.LongUrl, &url.Code)
 				if err != nil {
 					log.Fatal(err)
 					c.JSON(http.StatusNotFound, gin.H{
@@ -150,7 +151,7 @@ func main() {
 			defer rows.Close()
 			var url Url
 			for rows.Next() {
-				err = rows.Scan(&url.long_url, &url.code)
+				err = rows.Scan(&url.LongUrl, &url.Code)
 				if err != nil {
 					log.Fatal(err)
 					c.JSON(http.StatusNotFound, gin.H{
@@ -185,7 +186,7 @@ func main() {
 			}
 			defer rows.Close()
 			rows.Next()
-			err = rows.Scan(&url.long_url, &url.code)
+			err = rows.Scan(&url.LongUrl, &url.Code)
 			if err != nil {
 				log.Fatal(err)
 				c.JSON(http.StatusNotFound, gin.H{
@@ -219,7 +220,7 @@ func main() {
 			log.Fatal(err)
 		}
 		defer stmt.Close()
-		_, err = stmt.Exec(body.long_url, body.code)
+		_, err = stmt.Exec(body.LongUrl, body.Code)
 		err = tx.Commit()
 		if err != nil {
 			log.Fatal(err)
@@ -245,7 +246,7 @@ func main() {
 		defer rows.Close()
 		var url Url
 		for rows.Next() {
-			err = rows.Scan(&url.long_url, &url.code)
+			err = rows.Scan(&url.LongUrl, &url.Code)
 			if err != nil {
 				log.Fatal(err)
 				c.JSON(http.StatusNotFound, gin.H{
@@ -260,7 +261,7 @@ func main() {
 				"message": "Not found",
 			})
 		}
-		c.Redirect(http.StatusMovedPermanently, url.long_url)
+		c.Redirect(http.StatusMovedPermanently, url.LongUrl)
 	})
 
 	router.Run("localhost:8080")
