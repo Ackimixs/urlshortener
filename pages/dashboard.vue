@@ -68,6 +68,8 @@
 </template>
 
 <script setup>
+// add qrcode implementation with on click show the donwload page
+
 const { $event } = useNuxtApp();
 
 const requestUrl = useRequestURL();
