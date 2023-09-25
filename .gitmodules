@@ -1,0 +1,8 @@
+[submodule "tempalte"]
+	path = tempalte
+	url = https://github.com/Ackimixs/urlshortener.git
+	branch = frontend
+[submodule "tempaltes"]
+	path = tempaltes
+	url = https://github.com/Ackimixs/urlshortener.git
+	branch = frontend
