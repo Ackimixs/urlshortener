@@ -1,0 +1,4 @@
+[submodule "server/public"]
+	path = server/public
+	url = https://github.com/Ackimixs/urlshortener.git
+	branch = frontend

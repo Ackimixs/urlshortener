@@ -59,10 +59,10 @@ app.get("/", (req, res) => {
   res.sendFile(import.meta.dir + "/public/index.html");
 });
 
-app.get("*", async (req, res) => {
+app.get("/r/:id", async (req, res) => {
   const url = await prisma.url.findFirst({
     where: {
-      code: req.url.replace("/", ""),
+      code: req.params.id as string,
     },
   });
 
