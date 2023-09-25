@@ -7,8 +7,8 @@ export default async (req: any, res: any, prisma: PrismaClient) => {
 
   const urlObj = await prisma.url.create({
     data: {
-      LongUrl: long_url,
-      Code: code,
+      long_url: long_url,
+      code: code,
     },
   });
 

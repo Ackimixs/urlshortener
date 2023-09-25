@@ -6,8 +6,8 @@ export default async (req: any, res: any, prisma: PrismaClient) => {
 
   const urlData = await prisma.url.findMany({
     where: {
-      LongUrl: long_url,
-      Code: code,
+      long_url: long_url,
+      code: code,
     },
   });
 

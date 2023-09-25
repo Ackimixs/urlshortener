@@ -62,15 +62,17 @@ app.get("/", (req, res) => {
 app.get("*", async (req, res) => {
   const url = await prisma.url.findFirst({
     where: {
-      Code: req.url.replace("/", ""),
+      code: req.url.replace("/", ""),
     },
   });
 
   if (url) {
-    res.redirect(url.LongUrl);
+    res.redirect(url.long_url);
   } else {
     res.send("404");
   }
 });
 
-app.listen(3000);
+app.listen(3000, () => {
+  console.log('App started on port 3000')
+});
