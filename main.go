@@ -13,8 +13,8 @@ import (
 )
 
 type Url struct {
-	LongUrl string `json:"longUrl" binding:"required"`
-	Code    string `json:"code" binding:"required"`
+	long_url string `json:"long_url"`
+	code     string `json:"code"`
 }
 
 func main() {
@@ -67,9 +67,9 @@ func main() {
 
 	router.GET("/api/url", func(c *gin.Context) {
 		code := c.Query("code")
-		longUrl := c.Query("longUrl")
+		long_url := c.Query("long_url")
 
-		if code == "" && longUrl == "" {
+		if code == "" && long_url == "" {
 			rows, err := db.Query("select long_url, code from url")
 			if err != nil {
 				log.Fatal(err)
@@ -81,7 +81,7 @@ func main() {
 			var urls []Url
 			for rows.Next() {
 				var url Url
-				err = rows.Scan(&url.LongUrl, &url.Code)
+				err = rows.Scan(&url.long_url, &url.code)
 				if err != nil {
 					log.Fatal(err)
 					c.JSON(http.StatusNotFound, gin.H{
@@ -105,7 +105,7 @@ func main() {
 
 			return
 		} else if code == "" {
-			rows, err := db.Query("select long_url, code from url where long_url = ?", longUrl)
+			rows, err := db.Query("select long_url, code from url where long_url = ?", long_url)
 			if err != nil {
 				log.Fatal(err)
 				c.JSON(http.StatusNotFound, gin.H{
@@ -115,7 +115,7 @@ func main() {
 			defer rows.Close()
 			var url Url
 			for rows.Next() {
-				err = rows.Scan(&url.LongUrl, &url.Code)
+				err = rows.Scan(&url.long_url, &url.code)
 				if err != nil {
 					log.Fatal(err)
 					c.JSON(http.StatusNotFound, gin.H{
@@ -139,7 +139,7 @@ func main() {
 				"message": "Not found",
 			})
 			return
-		} else if longUrl == "" {
+		} else if long_url == "" {
 			rows, err := db.Query("select long_url, code from url where code = ?", code)
 			if err != nil {
 				log.Fatal(err)
@@ -150,7 +150,7 @@ func main() {
 			defer rows.Close()
 			var url Url
 			for rows.Next() {
-				err = rows.Scan(&url.LongUrl, &url.Code)
+				err = rows.Scan(&url.long_url, &url.code)
 				if err != nil {
 					log.Fatal(err)
 					c.JSON(http.StatusNotFound, gin.H{
@@ -176,7 +176,7 @@ func main() {
 			return
 		} else {
 			var url Url
-			rows, err := db.Query("select long_url, code from url where code = ? && long_url = ?", code, longUrl)
+			rows, err := db.Query("select long_url, code from url where code = ? && long_url = ?", code, long_url)
 			if err != nil {
 				log.Fatal(err)
 				c.JSON(http.StatusNotFound, gin.H{
@@ -185,7 +185,7 @@ func main() {
 			}
 			defer rows.Close()
 			rows.Next()
-			err = rows.Scan(&url.LongUrl, &url.Code)
+			err = rows.Scan(&url.long_url, &url.code)
 			if err != nil {
 				log.Fatal(err)
 				c.JSON(http.StatusNotFound, gin.H{
@@ -219,7 +219,7 @@ func main() {
 			log.Fatal(err)
 		}
 		defer stmt.Close()
-		_, err = stmt.Exec(body.LongUrl, body.Code)
+		_, err = stmt.Exec(body.long_url, body.code)
 		err = tx.Commit()
 		if err != nil {
 			log.Fatal(err)
@@ -245,7 +245,7 @@ func main() {
 		defer rows.Close()
 		var url Url
 		for rows.Next() {
-			err = rows.Scan(&url.LongUrl, &url.Code)
+			err = rows.Scan(&url.long_url, &url.code)
 			if err != nil {
 				log.Fatal(err)
 				c.JSON(http.StatusNotFound, gin.H{
@@ -260,7 +260,7 @@ func main() {
 				"message": "Not found",
 			})
 		}
-		c.Redirect(http.StatusMovedPermanently, url.LongUrl)
+		c.Redirect(http.StatusMovedPermanently, url.long_url)
 	})
 
 	router.Run("localhost:8080")
