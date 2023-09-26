@@ -1,0 +1,24 @@
+{
+  "name": "urlshortener",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@prisma/client": "5.3.1",
+    "bunrest": "^1.3.6",
+    "prisma": "latest"
+  },
+  "scripts": {
+    "clean": "rm -rf dist && echo 'Done.'",
+    "start": "bun index.ts",
+    "prisma:migrate:dev": "bunx prisma migrate dev",
+    "prisma:migrate:generate": "bunx prisma generate",
+    "prisma:studio": "bunx prisma studio --browser none",
+    "prisma:studio:browser": "bunx prisma studio"
+  }
+}
