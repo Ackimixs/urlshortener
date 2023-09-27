@@ -1,0 +1,8 @@
+[submodule "public"]
+	path = public
+	url = https://github.com/Ackimixs/urlshortener.git
+	branch = frontend
+[submodule "templates"]
+	path = templates
+	url = https://github.com/Ackimixs/urlshortener.git
+	branch = frontend
