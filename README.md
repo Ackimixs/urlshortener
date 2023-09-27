@@ -11,12 +11,13 @@ for the moment :
 - [x] ktor (kotlin)
 - [ ] rust
 - [x] go
-- [ ] nodejs
+- [x] nodejs
+- [x] bun 
 - [ ] flask
 - [ ] django
 - [ ] spring
-- [ ] laravel
-- [ ] symfony
-- [ ] nextjs
+- [x] laravel
+- [x] symfony
+- [x] nextjs
 - [ ] sveltekit
 - [ ] c#
