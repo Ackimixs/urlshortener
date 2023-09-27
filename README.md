@@ -15,6 +15,7 @@ for the moment :
 - [x] bun 
 - [ ] flask
 - [ ] django
+- [ ] fast api
 - [ ] spring
 - [x] laravel
 - [x] symfony
