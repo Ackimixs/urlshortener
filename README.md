@@ -19,6 +19,6 @@ for the moment :
 - [ ] spring
 - [x] laravel
 - [x] symfony
-- [x] nextjs
+- [ ] nextjs
 - [ ] sveltekit
 - [ ] c#
