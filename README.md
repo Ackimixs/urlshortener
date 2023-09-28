@@ -16,7 +16,7 @@ for the moment :
 - [x] flask
 - [x] django
 - [x] fast api
-- [ ] spring
+- [x] spring
 - [x] laravel
 - [x] symfony
 - [ ] nextjs
