@@ -13,9 +13,9 @@ for the moment :
 - [x] go
 - [x] nodejs
 - [x] bun 
-- [ ] flask
+- [x] flask
 - [ ] django
-- [ ] fast api
+- [x] fast api
 - [ ] spring
 - [x] laravel
 - [x] symfony
