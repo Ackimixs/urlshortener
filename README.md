@@ -9,7 +9,7 @@ for the moment :
 - [x] c++, crow
 - [x] vannilaJs
 - [x] ktor (kotlin)
-- [ ] rust
+- [x] rust
 - [x] go
 - [x] nodejs
 - [x] bun 
