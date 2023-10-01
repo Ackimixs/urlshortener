@@ -74,7 +74,7 @@ class UrlApiController extends AbstractController
         return new JsonResponse(['body' => ['url' => 'Url deleted']]);
     }
 
-    #[Route('/api/url/{id}', name: "url_update", methods: ['PUT'])]
+    #[Route('/api/url/{id}', name: "url_update", methods: ['PUT', 'PATCH'])]
     public function update(int $id, Request $requets, UrlRepository $urlRepository, EntityManagerInterface $entityManager): JsonResponse
     {
         $url = $urlRepository->findOneById($id);
