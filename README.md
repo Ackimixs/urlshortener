@@ -22,4 +22,4 @@ for the moment :
 - [ ] nextjs
 - [ ] sveltekit
 - [ ] c#
-- [ ] ruby on rails
+- [x] ruby on rails
