@@ -114,6 +114,8 @@
 
         if (!data?.body?.url) return;
 
+        console.log(data);
+
         for (const urlData of data.body.url) {
             const tr = document.createElement("tr");
             tr.id = `id-${urlData.id}`;
@@ -218,18 +220,18 @@
         const deleteButton = document.createElement("button");
         deleteButton.innerHTML = "Delete";
         deleteButton.addEventListener("click", async (e) => {
-            const url = await fetch(`/api/url/${url.id}`, {
+            const urlData = await fetch(`/api/url/${url.id}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
 
-            const data = await url.json();
+            const data = await urlData.json();
 
             console.log(data);
 
-            if (data?.body?.url) {
+            if (data?.body) {
                 document.querySelector(`#id-${url.id}`).remove();
             }
         });
@@ -239,7 +241,7 @@
         editButton.innerHTML = "Edit";
 
         editButton.addEventListener("click", async (e) => {
-            const url = await fetch(`/api/url/${url.id}`, {
+            const urlData = await fetch(`/api/url/${url.id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -247,7 +249,7 @@
                 body: JSON.stringify({ code: codeInput.value, long_url: longUrlInput.value }),
             });
 
-            const data = await url.json();
+            const data = await urlData.json();
 
             console.log(data);
 
