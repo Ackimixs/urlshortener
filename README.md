@@ -1,25 +1,24 @@
-# urlshortenr
+# README
 
-a simple url shortener but with different backend
+This README would normally document whatever steps are necessary to get the
+application up and running.
 
-the nuxt3 version has better functionality and is more complete other have a single web page as frontend, the nuxt3 version have an auth system and a better dashboard
+Things you may want to cover:
 
-for the moment :
-- [x] nuxt3
-- [x] c++, crow
-- [x] vannilaJs
-- [x] ktor (kotlin)
-- [x] rust
-- [x] go
-- [x] nodejs
-- [x] bun 
-- [x] flask
-- [x] django
-- [x] fast api
-- [x] spring
-- [x] laravel
-- [x] symfony
-- [ ] nextjs
-- [ ] sveltekit
-- [ ] c#
-- [ ] ruby on rails
+* Ruby version
+
+* System dependencies
+
+* Configuration
+
+* Database creation
+
+* Database initialization
+
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...
