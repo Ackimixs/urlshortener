@@ -68,8 +68,8 @@
 
     document.querySelector("#submit").addEventListener("click", async () => {
         document.querySelector("#result").innerHTML = "Result : ";
-        const long_url = document.querySelector("#long_url").value;
-        const code = document.querySelector("#code").value;
+        const long_url = document.querySelector("#long_url");
+        const code = document.querySelector("#code");
 
         console.log(long_url, code);
 
@@ -78,7 +78,7 @@
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ long_url, code }),
+            body: JSON.stringify({ long_url: long_url.value, code: code.value }),
         });
 
         const data = await url.json();
@@ -90,6 +90,9 @@
         if (data?.body?.url) {
             addData(data.body.url);
         }
+    
+        long_url.value = "";
+        code.value = "";
     });
 
 
