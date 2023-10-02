@@ -13,11 +13,11 @@ fun Route.urlRoutes() {
         get {
             val params = call.request.queryParameters;
             val code = params["code"]
-            val longUrl = params["longUrl"]
+            val long_url = params["long_url"]
 
-            if (code != null && longUrl != null) {
-                val url = dao.url(code, longUrl) ?: return@get call.respondText(
-                    "No url with code $code and longUrl $longUrl",
+            if (code != null && long_url != null) {
+                val url = dao.url(code, long_url) ?: return@get call.respondText(
+                    "No url with code $code and long_url $long_url",
                     status = HttpStatusCode.NotFound
                 )
                 call.respond(mapOf("body" to mapOf("url" to url)));
@@ -29,9 +29,9 @@ fun Route.urlRoutes() {
                 )
                 call.respond(mapOf("body" to mapOf("url" to url)));
             }
-            else if (longUrl != null) {
-                val url = dao.url_w_longurl(longUrl) ?: return@get call.respondText(
-                    "No url with longUrl $longUrl",
+            else if (long_url != null) {
+                val url = dao.url_w_longurl(long_url) ?: return@get call.respondText(
+                    "No url with long_url $long_url",
                     status = HttpStatusCode.NotFound
                 )
                 call.respond(mapOf("body" to mapOf("url" to url)));
@@ -42,7 +42,7 @@ fun Route.urlRoutes() {
 
         post {
             val url = call.receive<com.example.models.Url>()
-            val newUrl = dao.addNewUrl(url.longUrl, url.code) ?: return@post call.respondText(
+            val newUrl = dao.addNewUrl(url.long_url, url.code) ?: return@post call.respondText(
                 "Error creating url",
                 status = HttpStatusCode.InternalServerError
             )

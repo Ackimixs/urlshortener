@@ -6,7 +6,7 @@ import org.jetbrains.exposed.sql.*
 
 class DAOFacadeImpl : DAOFacade {
     private fun resultRowToUrl(row: ResultRow) = Url(
-        longUrl = row[Urls.longUrl],
+        long_url = row[Urls.long_url],
         code = row[Urls.code]
     )
 
@@ -14,23 +14,23 @@ class DAOFacadeImpl : DAOFacade {
         Urls.selectAll().map { resultRowToUrl(it) }
     }
 
-    override suspend fun url(code: String, longUrl: String): Url? = dbQuery {
-        Urls.select { (Urls.code eq code) and (Urls.longUrl eq longUrl) }.mapNotNull { resultRowToUrl(it) }.singleOrNull()
+    override suspend fun url(code: String, long_url: String): Url? = dbQuery {
+        Urls.select { (Urls.code eq code) and (Urls.long_url eq long_url) }.mapNotNull { resultRowToUrl(it) }.singleOrNull()
     }
 
     override suspend fun url_w_code(code: String): Url? = dbQuery {
         Urls.select { Urls.code eq code }.mapNotNull { resultRowToUrl(it) }.singleOrNull()
     }
 
-    override suspend fun url_w_longurl(longUrl: String): Url? = dbQuery {
-        Urls.select { Urls.longUrl eq longUrl }.mapNotNull { resultRowToUrl(it) }.singleOrNull()
+    override suspend fun url_w_longurl(long_url: String): Url? = dbQuery {
+        Urls.select { Urls.long_url eq long_url }.mapNotNull { resultRowToUrl(it) }.singleOrNull()
     }
 
-    override suspend fun addNewUrl(longUrl: String, code: String): Url? {
-        val url = Url(longUrl, code)
+    override suspend fun addNewUrl(long_url: String, code: String): Url? {
+        val url = Url(long_url, code)
         return dbQuery {
             Urls.insert {
-                it[Urls.longUrl] = url.longUrl
+                it[Urls.long_url] = url.long_url
                 it[Urls.code] = url.code
             }
             url

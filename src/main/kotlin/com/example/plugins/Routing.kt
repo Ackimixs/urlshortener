@@ -19,7 +19,7 @@ fun Application.configureRouting() {
 
                 val url = dao.url_w_code(id) ?: return@get call.respondRedirect("/?error=404", permanent = true);
 
-                call.respondRedirect(url.longUrl, permanent = true)
+                call.respondRedirect(url.long_url, permanent = true)
             }
         }
         staticResources("/", "static") {
