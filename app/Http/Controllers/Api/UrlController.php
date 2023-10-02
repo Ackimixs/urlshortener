@@ -45,9 +45,9 @@ class UrlController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Url $url)
+    public function show(int $id)
     {
-        return new UrlResource($url);
+        return ['body' => ['url' => new UrlResource(Url::findOrFail($id))]];
     }
 
     /**
@@ -61,16 +61,24 @@ class UrlController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUrlRequest $request, Url $url)
+    public function update(UpdateUrlRequest $request, int $id)
     {
-        //
+        $url = Url::findOrFail($id);
+
+        $url->update($request->all());
+
+        return ['body' => ['url' => new UrlResource($url)]];
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Url $url)
+    public function destroy(int $id)
     {
-        //
+        $url = Url::findOrFail($id);
+
+        $url->delete();
+
+        return ['body' => ['url' => new UrlResource($url)]];
     }
 }

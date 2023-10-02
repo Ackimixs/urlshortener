@@ -1,0 +1,4 @@
+[submodule "resources/views/urlshortener"]
+	path = resources/views/urlshortener
+	url = https://github.com/Ackimixs/urlshortener.git
+	branch = frontend
