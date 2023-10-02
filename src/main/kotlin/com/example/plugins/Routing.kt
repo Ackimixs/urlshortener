@@ -22,7 +22,7 @@ fun Application.configureRouting() {
                 call.respondRedirect(url.long_url, permanent = true)
             }
         }
-        staticResources("/", "static") {
+        staticResources("/", "public") {
             default("index.html")
         }
     }
