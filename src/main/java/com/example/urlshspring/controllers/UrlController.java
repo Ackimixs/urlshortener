@@ -35,6 +35,21 @@ public class UrlController {
         return body;
     }
 
+    @PutMapping("/api/url/{id}")
+    public Map<String, Map<String, Url>> updateUrl(@PathVariable Integer id, @RequestBody Url url) {
+        Url urlToUpdate = urlRepository.findById(id).orElse(null);
+        urlToUpdate.setLong_url(url.getLong_url());
+        urlToUpdate.setCode(url.getCode());
+        urlRepository.save(urlToUpdate);
+        return new HashMap<>(Map.of("body", new HashMap<>(Map.of("url", urlToUpdate))));
+    }
+
+    @DeleteMapping("/api/url/{id}")
+    public Map<String, Map<String, String>> deleteUrl(@PathVariable Integer id) {
+        urlRepository.deleteById(id);
+        return new HashMap<>(Map.of("body", new HashMap<>(Map.of("message", "Url deleted"))));
+    }
+
     @GetMapping("/api/url/{id}")
     public Map<String, Map<String, Url>> getUrlById(@PathVariable Integer id) {
         Url url = urlRepository.findById(id).orElse(null);
@@ -52,5 +67,4 @@ public class UrlController {
             return new RedirectView("index");
         }
     }
-
 }
