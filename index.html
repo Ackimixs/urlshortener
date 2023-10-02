@@ -149,7 +149,7 @@
 
                 console.log(data);
 
-                if (data?.body?.url) {
+                if (data?.body) {
                     document.querySelector(`#id-${urlData.id}`).remove();
                 }
             });
@@ -170,7 +170,7 @@
 
                 console.log(data);
 
-                if (data?.body?.url) {
+                if (data?.body) {
                     editUrl(data.body.url);
                 }
             });
@@ -253,7 +253,7 @@
 
             console.log(data);
 
-            if (data?.body?.url) {
+            if (data?.body) {
                 editUrl(data.body.url);
             }
         });
