@@ -17,3 +17,23 @@ def create_url(db: Session, url: schemas.UrlCreate):
     db.commit()
     db.refresh(db_url)
     return db_url
+
+
+def update_url(db: Session, id: int, url: schemas.UrlUpdate):
+    db_url = db.query(models.Url).filter(models.Url.id == id).first()
+    db_url.code = url.code
+    db_url.long_url = url.long_url
+    db.commit()
+    db.refresh(db_url)
+    return db_url
+
+
+def get_url(db: Session, id: int):
+    return db.query(models.Url).filter(models.Url.id == id).first()
+
+
+def delete_url(db: Session, id: int):
+    db_url = db.query(models.Url).filter(models.Url.id == id).first()
+    db.delete(db_url)
+    db.commit()
+    return db_url

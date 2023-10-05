@@ -10,6 +10,10 @@ class UrlCreate(UrlBase):
     pass
 
 
+class UrlUpdate(UrlBase):
+    pass
+
+
 class Url(UrlBase):
     id: int
 

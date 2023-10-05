@@ -45,8 +45,27 @@ def create_url(url: schemas.UrlCreate, db: Session = Depends(get_db)):
     return {"body": {"url": url}}
 
 
+@app.patch("/api/url/{id}")
+@app.put("/api/url/{id}")
+def update_url(id: int, url: schemas.UrlUpdate, db: Session = Depends(get_db)):
+    db_url = crud.get_url(db, id=id)
+    if db_url is None:
+        raise HTTPException(status_code=404, detail="Url not found")
+    url = crud.update_url(db=db, id=id, url=url)
+    return {"body": {"url": url}}
+
+
+@app.delete("/api/url/{id}")
+def delete_url(id: int, db: Session = Depends(get_db)):
+    db_url = crud.get_url(db, id=id)
+    if db_url is None:
+        raise HTTPException(status_code=404, detail="Url not found")
+    crud.delete_url(db=db, id=id)
+    return {"body": {"message": "Url deleted"}}
+
+
 @app.get('/r/{code}')
-def redirect_to_url(code : str, db: Session = Depends(get_db)):
+def redirect_to_url(code: str, db: Session = Depends(get_db)):
     db_url = crud.get_url_by_code(db, code=code)
     if db_url:
         return RedirectResponse(url=db_url.long_url)
