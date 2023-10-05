@@ -28,9 +28,7 @@ def redirect_to_url(code):
 
 @app.get('/api/url')
 def api_url_get():
-    conn = get_db_connection()
-    urls = conn.execute("SELECT * FROM url").fetchall()
-    conn.close()
+    urls = db_get_urls()
     return {
         'body': {
             'url': [dict(row) for row in urls]
@@ -44,16 +42,75 @@ def api_url_post():
     code = data['code']
     long_url = data['long_url']
     conn = get_db_connection()
-    conn.execute("INSERT INTO url (code, long_url) VALUES (?, ?) RETURNING *",
-                    (code, long_url)
-                    )
+    url = conn.execute("INSERT INTO url (code, long_url) VALUES (?, ?) RETURNING *",
+                       (code, long_url)
+                       ).fetchone()
     conn.commit()
     conn.close()
     return {
         "body": {
             "url": {
-                "code": code,
-                "long_url": long_url
+                "id": url['id'],
+                "code": url['code'],
+                "long_url": url['long_url']
+            }
+        }
+    }
+
+
+@app.patch('/api/url/<id>')
+@app.put('/api/url/<id>')
+def api_url_update(id):
+    url = db_get_url(id)
+    if url is None:
+        return {
+            "body": {
+                "error": "url not found"
+            }
+        }
+
+    data = json.loads(request.data)
+    code = data['code'] if 'code' in data else url['code']
+    long_url = data['long_url'] if 'long_url' in data else url['long_url']
+    conn = get_db_connection()
+    new_url = conn.execute("UPDATE url SET code = ?, long_url = ? WHERE id = ? RETURNING *",
+                           (code, long_url, id)
+                           ).fetchone()
+    conn.commit()
+    conn.close()
+
+    return {
+        "body": {
+            "url": {
+                "id": new_url['id'],
+                "code": new_url['code'],
+                "long_url": new_url['long_url']
+            }
+        }
+    }
+
+
+@app.delete('/api/url/<id>')
+def api_url_delete(id):
+    url = db_get_url(id)
+    if url is None:
+        return {
+            "body": {
+                "error": "url not found"
+            }
+        }
+
+    conn = get_db_connection()
+    conn.execute("DELETE FROM url WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+
+    return {
+        "body": {
+            "url": {
+                "id": url['id'],
+                "code": url['code'],
+                "long_url": url['long_url']
             }
         }
     }
@@ -61,3 +118,17 @@ def api_url_post():
 
 if __name__ == '__main__':
     app.run()
+
+
+def db_get_urls():
+    conn = get_db_connection()
+    urls = conn.execute("SELECT * FROM url").fetchall()
+    conn.close()
+    return urls
+
+
+def db_get_url(id):
+    conn = get_db_connection()
+    url = conn.execute("SELECT * FROM url WHERE id=?", (id,)).fetchone()
+    conn.close()
+    return url
