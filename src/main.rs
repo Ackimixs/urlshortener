@@ -50,7 +50,7 @@ async fn main() {
             .and_then(handler::urls_list_handler));
 
     let url_routes_id = url_router_id
-        .and(warp::patch())
+        .and(warp::put())
         .and(warp::body::json())
         .and(with_db(db.clone()))
         .and_then(handler::edit_url_handler)

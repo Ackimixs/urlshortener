@@ -1,9 +1,9 @@
-use std::str::FromStr;
 use crate::{
     model::{QueryOptions, UpdateUrlSchema, Url, DB},
     response::{GenericResponse, SingleUrlResponse, UrlListResponse},
     WebResult,
 };
+use std::str::FromStr;
 use uuid::Uuid;
 use warp::{http::StatusCode, http::Uri, reply::json, reply::with_status, Reply};
 
@@ -119,8 +119,17 @@ pub async fn delete_url_handler(id: String, db: DB) -> WebResult<impl Reply> {
 
     for url in vec.iter_mut() {
         if url.id == Some(id.clone()) {
-            vec.retain(|url| url.id != Some(id.to_owned()));
-            return Ok(with_status(json(&""), StatusCode::NO_CONTENT));
+            let url_copy = url.to_owned();
+
+            vec.retain(|u| u.id != Some(id.clone()));
+
+            let json_response = SingleUrlResponse {
+                body: [("url".to_string(), url_copy.to_owned())]
+                    .iter()
+                    .cloned()
+                    .collect(),
+            };
+            return Ok(with_status(json(&json_response), StatusCode::OK));
         }
     }
 
@@ -136,9 +145,13 @@ pub async fn redirect_handler(code: String, db: DB) -> WebResult<impl Reply> {
 
     for url in vec.iter() {
         if url.code == code.to_owned() {
-            return Ok(warp::redirect::permanent(Uri::from_str(&url.long_url).unwrap()));
+            return Ok(warp::redirect::permanent(
+                Uri::from_str(&url.long_url).unwrap(),
+            ));
         }
     }
 
-    return Ok(warp::redirect::permanent(Uri::from_str("http://localhost:8000/").unwrap()));
+    return Ok(warp::redirect::permanent(
+        Uri::from_str("http://localhost:8000/").unwrap(),
+    ));
 }
