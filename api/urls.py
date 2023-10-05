@@ -1,8 +1,7 @@
 from django.urls import path, include
-from .views import (
-    UrlListApiView,
-)
+from . import views
 
 urlpatterns = [
-    path('url', UrlListApiView.as_view()),
+    path('url', views.url_func),
+    path('url/<int:pk>', views.url_func_id),
 ]
