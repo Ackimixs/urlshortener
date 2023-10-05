@@ -37,7 +37,13 @@ fun Route.urlRoutes() {
             val url = call.receive<com.example.models.UrlDTO>()
 
             dao.updateUrl(id, url.long_url, url.code)
-            call.respond(mapOf("body" to mapOf("url" to url)))
+
+            val newUrl = dao.url_w_id(id) ?: return@put call.respondText(
+                "No url with id $id",
+                status = HttpStatusCode.NotFound
+            )
+
+            call.respond(mapOf("body" to mapOf("url" to newUrl)))
         }
 
         patch("/{id}") {
@@ -48,7 +54,13 @@ fun Route.urlRoutes() {
             val url = call.receive<com.example.models.UrlDTO>()
 
             dao.updateUrl(id, url.long_url, url.code)
-            call.respond(mapOf("body" to mapOf("url" to url)))
+
+            val newUrl = dao.url_w_id(id) ?: return@patch call.respondText(
+                "No url with id $id",
+                status = HttpStatusCode.NotFound
+            )
+
+            call.respond(mapOf("body" to mapOf("url" to newUrl)))
         }
 
         delete("/{id}") {
