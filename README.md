@@ -19,7 +19,5 @@ for the moment :
 - [x] spring
 - [x] laravel
 - [x] symfony
-- [ ] nextjs
-- [ ] sveltekit
 - [ ] c#
 - [x] ruby on rails
