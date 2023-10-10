@@ -283,10 +283,12 @@
         const idP = tr.querySelector("p");
         const longUrlInput = tr.querySelector("input");
         const codeInput = tr.querySelectorAll("input")[1];
+        const redirect = tr.querySelector("a");
 
         idP.innerHTML = url.id;
         longUrlInput.value = url.long_url;
         codeInput.value = url.code;
+        redirect.href = `${window.location.origin}/r/${url.code}`;
     }
 
     (async () => {
