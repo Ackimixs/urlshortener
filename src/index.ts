@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
 
 app.use("/api/url", ApiUrlRouter);
 app.use("/api", ApiAuthRouter);
-app.use("/", HomeRouter);
+app.use("/r", HomeRouter);
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");

@@ -10,7 +10,7 @@ router.use(async (req, res, next) => {
   next();
 });
 
-router.get("/r/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   const url = await prisma.url.findFirst({
     where: {
       code: req.params.id as string,

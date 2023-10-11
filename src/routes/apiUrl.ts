@@ -53,6 +53,7 @@ router.post("/", async (req, res) => {
     res.send({
       body: {
         url: urlObj,
+        message: "Url created",
       },
     });
     return;
@@ -94,6 +95,7 @@ router.put("/:id", async (req, res) => {
   res.send({
     body: {
       url: url,
+      message: "Url updated",
     },
   });
 });
@@ -112,6 +114,7 @@ router.patch("/:id", async (req, res) => {
   res.send({
     body: {
       url: url,
+      message: "Url updated",
     },
   });
 });
@@ -126,6 +129,7 @@ router.delete("/:id", async (req, res) => {
   res.send({
     body: {
       url: url,
+      message: "Url deleted",
     },
   });
 });
