@@ -7,7 +7,7 @@ the nuxt3 version has better functionality and is more complete other have a sin
 for the moment :
 - [x] nuxt3
 - [x] c++, crow
-- [x] vannilaJs
+- [x] vannilaJs with auth
 - [x] ktor (kotlin)
 - [x] rust
 - [x] go
@@ -19,5 +19,5 @@ for the moment :
 - [x] spring
 - [x] laravel
 - [x] symfony
-- [ ] c#
+- [X] c#
 - [x] ruby on rails
