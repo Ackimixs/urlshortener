@@ -7,7 +7,7 @@ the nuxt3 version has better functionality and is more complete other have a sin
 for the moment :
 - [x] nuxt3
 - [x] c++, crow
-- [x] vannilaJs with auth
+- [x] vannilaJs with auth and token
 - [x] ktor (kotlin)
 - [x] rust
 - [x] go
