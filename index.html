@@ -6,55 +6,340 @@
     <title>Document</title>
   </head>
   <body>
-    <div>
-      <h1>Login</h1>
-      <div>
-        <form id="formLogin">
-          <input type="email" name="mail" id="mail" placeholder="Mail" />
-          <input
-            type="password"
-            name="password"
-            id="password"
-            placeholder="Password"
-          />
-          <button id="login">Login</button>
-        </form>
-      </div>
-    </div>
-    <div id="container">
-      <div>
-        <h1>Url Shortener</h1>
-        <div>
-          <input
-            type="text"
-            name="long_url"
-            id="long_url"
-            placeholder="longUrl"
-          />
-          <input type="text" name="code" id="code" placeholder="Code" />
-          <button id="submit">Submit</button>
-        </div>
-        <p id="result">Result :</p>
+    <header>
+      <h1>Urlsh</h1>
+      <button type="button" class="goToDash" onclick="console.log(true)">
+        DASHBAORD
+      </button>
+    </header>
+    <main>
+      <h2 class="text-white">Dashboard</h2>
+      <form class="creator">
+        <input type="text" name="longUrl" id="longUrl" placeholder="Long Url" />
+        <input type="text" name="code" id="code" placeholder="Code" />
+        <button type="submit" id="create" class="buttonIcon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="39"
+            height="39"
+            viewBox="0 0 39 39"
+            fill="none"
+          >
+            <path
+              d="M3.705 19C3.705 15.58 6.4155 12.8 9.75 12.8H17.55V9H9.75C4.368 9 0 13.48 0 19C0 24.52 4.368 29 9.75 29H17.55V25.2H9.75C6.4155 25.2 3.705 22.42 3.705 19ZM11.7 21H27.3V17H11.7V21ZM29.25 9H21.45V12.8H29.25C32.5845 12.8 35.295 15.58 35.295 19C35.295 22.42 32.5845 25.2 29.25 25.2H21.45V29H29.25C34.632 29 39 24.52 39 19C39 13.48 34.632 9 29.25 9Z"
+              fill="black"
+            />
+          </svg>
+        </button>
+      </form>
+      <div id="urlList" class="hide-scrollbar">
 
-        <div id="listOfUrl">
-          <h1>List of Url</h1>
-          <table id="tableOfUrl">
-            <thead>
-              <tr>
-                <th>id</th>
-                <th>Long url</th>
-                <th>Code</th>
-                <th>Edit</th>
-                <th>Delete</th>
-                <th>Go</th>
-              </tr>
-            </thead>
-            <tbody id="urlData"></tbody>
-          </table>
-        </div>
       </div>
-    </div>
+    </main>
   </body>
+
+  <script defer>
+    const form = document.querySelector(".creator");
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      let long_url = document.querySelector("#longUrl").value;
+      let code = document.querySelector("#code").value;
+
+      if (long_url && code) {
+          console.log(long_url, code);
+
+          const data = await fetch('/api/url', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              long_url,
+              code
+            })
+          })
+
+          const urls = await data.json();
+
+          console.log(urls);
+
+          await createUrl(urls.body.url);
+      }
+    })
+
+
+    const refresh = async () => {
+      const container = document.querySelector("#urlList");
+
+      while (container.firstChild) {
+        container.removeChild(container.firstChild);
+      }
+
+        const data = await fetch('/api/url', {
+            method: 'GET',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+        })
+
+        const urls = await data.json();
+
+        console.log(urls.body.url);
+
+        for (const u of urls.body.url) {
+          await createUrl(u);
+        }
+    }
+
+    const createUrl = async (url) => {
+      const container = document.querySelector("#urlList");
+
+      const urlItem = document.createElement("div");
+      urlItem.classList.add("urlItem");
+      urlItem.id = `url-${url.id}`;
+
+      const urlInfo = document.createElement("div");
+      urlInfo.classList.add("urlInfo");
+
+      const urlCode = document.createElement("a");
+      urlCode.href = `${window.location.origin}/r/${url.code}`;
+      urlCode.target = "_blank";
+      urlCode.classList.add("url-code");
+      urlCode.id = `code-${url.id}`;
+      urlCode.innerHTML = `${window.location.host}/r<span class="colored-text">/${url.code}</span>`;4
+
+      const urlCodeFormDiv = document.createElement("div");
+      urlCodeFormDiv.classList.add("url-code-form");
+      urlCodeFormDiv.style.display = "none";
+
+      const urlCodeFormText = document.createElement("p");
+      urlCodeFormText.innerHTML = `${window.location.host}/r<span class="colored-text">/</span>`;
+
+      const urlCodeForm = document.createElement("input");
+      urlCodeForm.type = "text";
+      urlCodeForm.name = "code";
+      urlCodeForm.classList.add("url-code-input", "colored-text");
+      urlCodeForm.value = url.code;
+
+      urlCodeFormDiv.appendChild(urlCodeFormText);
+      urlCodeFormDiv.appendChild(urlCodeForm);
+
+      // TODO make a div with a p and this input tag
+
+      const urlLongUrl = document.createElement("p");
+      urlLongUrl.classList.add("url-longUrl");
+      urlLongUrl.id = `longUrl-${url.id}`;
+      urlLongUrl.innerHTML = url.long_url;
+
+      const urlLongUrlForm = document.createElement("input");
+      urlLongUrlForm.type = "text";
+      urlLongUrlForm.name = "longUrl";
+      urlLongUrlForm.classList.add("url-longUrl");
+      urlLongUrlForm.value = url.long_url;
+      urlLongUrlForm.hidden = true;
+
+      urlInfo.appendChild(urlCode);
+      urlInfo.appendChild(urlCodeFormDiv);
+      urlInfo.appendChild(urlLongUrl);
+      urlInfo.appendChild(urlLongUrlForm);
+
+      const iconList = document.createElement("div");
+      iconList.classList.add("iconList");
+
+      const editButton = document.createElement("button");
+      editButton.type = "button";
+      editButton.classList.add("edit", "buttonIcon");
+      editButton.id = `edit-${url.id}`;
+      editButton.innerHTML = `
+              <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="39"
+              height="39"
+              viewBox="0 0 39 39"
+              fill="none"
+              >
+              <path
+                  d="M23.9633 13.0433L25.9567 15.0367L6.32667 34.6667H4.33333V32.6733L23.9633 13.0433ZM31.7633 0C31.2217 0 30.6583 0.216667 30.2467 0.628333L26.2817 4.59333L34.4067 12.7183L38.3717 8.75333C39.2167 7.90833 39.2167 6.54333 38.3717 5.69833L33.3017 0.628333C32.8683 0.195 32.3267 0 31.7633 0ZM23.9633 6.91167L0 30.875V39H8.125L32.0883 15.0367L23.9633 6.91167Z"
+                  fill="black"
+              />
+              </svg>
+          `;
+      editButton.addEventListener('click', () => {
+        editButton.hidden = true;
+        saveButton.hidden = false;
+
+        urlCode.hidden = true;
+        urlCodeFormDiv.style.display = "flex";
+
+        urlLongUrl.hidden = true;
+        urlLongUrlForm.hidden = false;
+      })
+
+      const saveButton = document.createElement("button");
+      saveButton.type = "button";
+      saveButton.classList.add("save", "buttonIcon");
+      saveButton.id = `save-${url.id}`;
+      saveButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="39" height="39" viewBox="0 0 39 39" fill="none">
+            <path d="M27.6251 4.875H8.12512C6.32137 4.875 4.87512 6.3375 4.87512 8.125V30.875C4.87512 32.6625 6.32137 34.125 8.12512 34.125H30.8751C32.6626 34.125 34.1251 32.6625 34.1251 30.875V11.375L27.6251 4.875ZM30.8751 30.875H8.12512V8.125H26.2764L30.8751 12.7237V30.875ZM19.5001 19.5C16.8026 19.5 14.6251 21.6775 14.6251 24.375C14.6251 27.0725 16.8026 29.25 19.5001 29.25C22.1976 29.25 24.3751 27.0725 24.3751 24.375C24.3751 21.6775 22.1976 19.5 19.5001 19.5ZM9.75012 9.75H24.3751V16.25H9.75012V9.75Z" fill="black"/>
+          </svg>`
+      saveButton.hidden = true;
+      saveButton.addEventListener('click', async () => {
+        const id = url.id;
+
+        const longUrl = urlLongUrlForm.value;
+        const code = urlCodeForm.value;
+
+        const d = await fetch(`/api/url/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            long_url: longUrl,
+            code: code
+          })
+        })
+
+        const urls = await d.json();
+
+        url = urls.body.url;
+
+        urlLongUrl.innerHTML = urls.body.url.long_url;
+        urlCode.innerHTML = `${window.location.host}/r<span class="colored-text">/${urls.body.url.code}</span>`;
+        urlCode.href = `${window.location.origin}/r/${urls.body.url.code}`;
+
+        urlCode.hidden = false;
+        urlCodeFormDiv.style.display = "none";
+
+        urlLongUrl.hidden = false;
+        urlLongUrlForm.hidden = true;
+
+        saveButton.hidden = true;
+        editButton.hidden = false;
+      })
+
+      const copyButton = document.createElement("button");
+      copyButton.type = "button";
+      copyButton.classList.add("copy", "buttonIcon");
+      copyButton.id = `copy-${url.id}`;
+      copyButton.innerHTML = `
+              <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="35"
+              height="39"
+              viewBox="0 0 35 39"
+              fill="none"
+              >
+              <path
+                  d="M31.1111 3.54545H22.9833C22.1667 1.48909 20.0278 0 17.5 0C14.9722 0 12.8333 1.48909 12.0167 3.54545H3.88889C1.75 3.54545 0 5.14091 0 7.09091V35.4545C0 37.4045 1.75 39 3.88889 39H31.1111C33.25 39 35 37.4045 35 35.4545V7.09091C35 5.14091 33.25 3.54545 31.1111 3.54545ZM17.5 3.54545C18.5694 3.54545 19.4444 4.34318 19.4444 5.31818C19.4444 6.29318 18.5694 7.09091 17.5 7.09091C16.4306 7.09091 15.5556 6.29318 15.5556 5.31818C15.5556 4.34318 16.4306 3.54545 17.5 3.54545ZM31.1111 35.4545H3.88889V7.09091H7.77778V12.4091H27.2222V7.09091H31.1111V35.4545Z"
+                  fill="black"
+              />
+              </svg>
+          `;
+
+      copyButton.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        navigator.clipboard.writeText(`${window.location.origin}/r/${url.code}`);
+      });
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.classList.add("delete", "buttonIcon");
+      deleteButton.id = `delete-${url.id}`;
+      deleteButton.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="29" height="35" viewBox="0 0 29 35" fill="none">
+                <path d="M22.7857 11.6667V31.1111H6.21429V11.6667H22.7857ZM19.6786 0H9.32143L7.25 1.94444H0V5.83333H29V1.94444H21.75L19.6786 0ZM26.9286 7.77778H2.07143V31.1111C2.07143 33.25 3.93571 35 6.21429 35H22.7857C25.0643 35 26.9286 33.25 26.9286 31.1111V7.77778Z" fill="black"/>
+              </svg>
+          `;
+
+      deleteButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const d = await fetch(`/api/url/${url.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+
+        const urls = await d.json();
+
+        if (urls.body.url) {
+          urlItem.remove();
+        }
+      })
+
+      iconList.appendChild(editButton);
+      iconList.appendChild(saveButton);
+      iconList.appendChild(copyButton);
+      iconList.appendChild(deleteButton);
+
+      urlItem.appendChild(urlInfo);
+      urlItem.appendChild(iconList);
+
+      container.appendChild(urlItem);
+    }
+
+
+    (async () => {
+      await refresh();
+    })();
+  </script>
+
+  <!--
+
+    <div class="urlItem" id="url-6">
+          <div>
+            <a class="url-code" id="code-6" href="something" target="_blank">
+              myhost.com/<span class="colored-text">gg</span>
+            </a>
+            <p class="url-longUrl" id="longUrl-6">
+              https://extra.domain.com/drawer/png/flower...
+            </p>
+          </div>
+          <div class="iconList">
+            <button type="button" class="edit buttonIcon" id="edit-6">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="39"
+                height="39"
+                viewBox="0 0 39 39"
+                fill="none"
+              >
+                <path
+                  d="M23.9633 13.0433L25.9567 15.0367L6.32667 34.6667H4.33333V32.6733L23.9633 13.0433ZM31.7633 0C31.2217 0 30.6583 0.216667 30.2467 0.628333L26.2817 4.59333L34.4067 12.7183L38.3717 8.75333C39.2167 7.90833 39.2167 6.54333 38.3717 5.69833L33.3017 0.628333C32.8683 0.195 32.3267 0 31.7633 0ZM23.9633 6.91167L0 30.875V39H8.125L32.0883 15.0367L23.9633 6.91167Z"
+                  fill="black"
+                />
+              </svg>
+            </button>
+            <button type="button" class="copy buttonIcon" id="copy-6">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="35"
+                height="39"
+                viewBox="0 0 35 39"
+                fill="none"
+              >
+                <path
+                  d="M31.1111 3.54545H22.9833C22.1667 1.48909 20.0278 0 17.5 0C14.9722 0 12.8333 1.48909 12.0167 3.54545H3.88889C1.75 3.54545 0 5.14091 0 7.09091V35.4545C0 37.4045 1.75 39 3.88889 39H31.1111C33.25 39 35 37.4045 35 35.4545V7.09091C35 5.14091 33.25 3.54545 31.1111 3.54545ZM17.5 3.54545C18.5694 3.54545 19.4444 4.34318 19.4444 5.31818C19.4444 6.29318 18.5694 7.09091 17.5 7.09091C16.4306 7.09091 15.5556 6.29318 15.5556 5.31818C15.5556 4.34318 16.4306 3.54545 17.5 3.54545ZM31.1111 35.4545H3.88889V7.09091H7.77778V12.4091H27.2222V7.09091H31.1111V35.4545Z"
+                  fill="black"
+                />
+              </svg>
+            </button>
+            <button type="button" class="delete buttonIcon" id="delete-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="29" height="35" viewBox="0 0 29 35" fill="none">
+                <path d="M22.7857 11.6667V31.1111H6.21429V11.6667H22.7857ZM19.6786 0H9.32143L7.25 1.94444H0V5.83333H29V1.94444H21.75L19.6786 0ZM26.9286 7.77778H2.07143V31.1111C2.07143 33.25 3.93571 35 6.21429 35H22.7857C25.0643 35 26.9286 33.25 26.9286 31.1111V7.77778Z" fill="black"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+  -->
+
   <style>
     * {
       margin: 0;
@@ -67,298 +352,249 @@
       height: 100%;
     }
 
-    #container {
-      display: grid;
-      height: 100%;
-      place-items: center;
+    main {
+      height: calc(100% - 100px);
+      display: flex;
+      flex-direction: column;
+      padding: 20px calc(100% / 4);
     }
 
-    tr,
-    td,
-    th,
-    table {
-      border: 1px solid black;
+    header {
+      height: 100px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ccc;
+      padding: 0 30px;
     }
 
-    td > * {
-      width: 100%;
+    header > h1 {
+      margin: 5px 0;
+
+      color: #5fdd9d;
+      text-align: center;
+      font-family: Kanit, sans-serif;
+      font-size: 40px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 43.2px; /* 108% */
+      letter-spacing: -0.48px;
+    }
+
+    header > button.goToDash {
+      border-radius: 8px;
+      background: linear-gradient(
+        270deg,
+        #43c0b2 0%,
+        rgba(104, 225, 211, 0.4) 100%
+      );
       border: none;
-      padding: 5px;
+      cursor: pointer;
+      padding: 10px 20px;
+
+      color: #000;
+      text-align: center;
+      font-family: Inter, sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+    }
+
+    html {
+      background: black;
+    }
+
+    body {
+      background: radial-gradient(
+        133.49% 85.27% at 40.61% 13.85%,
+        rgba(88, 160, 226, 0.75) 0%,
+        rgba(76, 197, 214, 0.41) 49.53%,
+        rgba(52, 209, 162, 0.08) 100%
+      );
+    }
+
+    main > h2 {
+      margin: 5px 0;
+
+      color: #fff;
+      font-family: Inter, sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+    }
+
+    .creator {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0;
+      border-radius: 16px;
+      background: rgba(21, 30, 27, 0.4);
+      padding: 30px;
+    }
+
+    #longUrl {
+      border-radius: 16px;
+      border: 2px solid rgba(95, 221, 157, 0.8);
+      background: rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      /*
+          TODO made it responsive :)
+       */
+      min-width: 400px;
+
+      color: #69d1c5;
+      font-family: Inter, sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 28px; /* 140% */
+      letter-spacing: -0.2px;
+    }
+
+    #code {
+      border-radius: 14px;
+      border: 2px solid rgba(95, 221, 157, 0.8);
+      background: rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      /*
+          TODO made it responsive :)
+       */
+      min-width: 170px;
+
+      color: #69d1c5;
+      font-family: Inter, sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 28px; /* 140% */
+      letter-spacing: -0.2px;
+    }
+
+    button.buttonIcon {
+      border: none;
+      cursor: pointer;
+      border-radius: 50%;
+      padding: 10px;
+      background-color: rgba(95, 221, 157, 0.8);
+      text-decoration: none;
+      height: 64px;
+      width: 64px;
+    }
+
+    #urlList {
+      display: flex;
+      flex-direction: column;
+      border-radius: 16px;
+      background: rgba(21, 30, 27, 0.4);
+      padding: 20px;
+      overflow-y: auto;
+      max-height: 100%;
+    }
+
+    .urlItem {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 16px;
+      background: linear-gradient(
+        90deg,
+        rgba(5, 149, 97, 0.8) 0.4%,
+        rgba(48, 152, 119, 0.5) 100%
+      );
+      padding: 20px;
+      margin: 10px;
+    }
+
+    .urlInfo {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .url-code {
+      color: #000;
+      font-family: Inter, sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 28px; /* 140% */
+      cursor: pointer;
+      text-decoration: none;
+      background: transparent;
+      border: none;
+    }
+
+    input.url-code {
+      color: #00ffa3dd;
+    }
+
+    .url-code-form {
+      display: flex;
+      flex-direction: row;
+      color: #000;
+      font-family: Inter, sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 28px; /* 140% */
+    }
+
+    .url-code-input {
+      font-family: Inter, sans-serif;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 28px; /* 140% */
+      cursor: text;
+      text-decoration: none;
+      background: transparent;
+      border: 1px solid #00ffa3dd;
+      border-radius: 8px;
+      padding: 0 5px;
+    }
+
+    .url-longUrl {
+      color: #000;
+      font-family: Inter, sans-serif;
+      font-size: 11px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 28px; /* 254.545% */
+      letter-spacing: -0.11px;
+      background: transparent;
+      border: none;
+    }
+
+    .colored-text {
+      color: #00ffa3dd;
+      font-weight: bold;
+    }
+
+    .iconList {
+      width: calc(64px * 3 + 25px * 2);
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin-right: 20px;
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .hide-scrollbar {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
     }
   </style>
-  <script>
-    // LOGIN SECTION
-    const form = document.querySelector("#formLogin");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const email = document.querySelector("#mail");
-      const password = document.querySelector("#password");
-
-      const user = await fetch("/api/user/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: email.value, password: password.value }),
-      });
-
-      const data = await user.json();
-
-      if (data.body.user) {
-        localStorage.setItem("token", data.body.token.token);
-
-        await refresh();
-      }
-    });
-
-    /*
-
-
-
-
-     */
-    document.querySelector("#submit").addEventListener("click", async () => {
-      document.querySelector("#result").innerHTML = "Result : ";
-      const long_url = document.querySelector("#long_url");
-      const code = document.querySelector("#code");
-
-      console.log(long_url, code);
-
-      const url = await fetch("/api/url", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-token": localStorage.getItem("token"),
-        },
-        body: JSON.stringify({ long_url: long_url.value, code: code.value }),
-      });
-
-      const data = await url.json();
-
-      console.log(data);
-
-      document.querySelector("#result").innerHTML +=
-        window.location.origin + "/r/" + data.body.url.code;
-
-      if (data?.body?.url) {
-        addData(data.body.url);
-      }
-
-      long_url.value = "";
-      code.value = "";
-    });
-
-    const refresh = async () => {
-      const BodytableOfUrl = document.querySelector("#urlData");
-
-      while (BodytableOfUrl.firstChild) {
-        BodytableOfUrl.removeChild(BodytableOfUrl.firstChild);
-      }
-
-      const url = await fetch("/api/url", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-token": localStorage.getItem("token"),
-        },
-      });
-
-      const data = await url.json();
-
-      if (!data?.body?.url) return;
-
-      console.log(data);
-
-      for (const urlData of data.body.url) {
-        const tr = document.createElement("tr");
-        tr.id = `id-${urlData.id}`;
-
-        const tdId = document.createElement("td");
-        const idP = document.createElement("p");
-        tdId.appendChild(idP);
-
-        const tdLongUrl = document.createElement("td");
-        const longUrlInput = document.createElement("input");
-        tdLongUrl.appendChild(longUrlInput);
-
-        const tdCode = document.createElement("td");
-        const codeInput = document.createElement("input");
-        tdCode.appendChild(codeInput);
-
-        const tdGo = document.createElement("td");
-
-        const tdDelete = document.createElement("td");
-        const deleteButton = document.createElement("button");
-        deleteButton.innerHTML = "Delete";
-        deleteButton.addEventListener("click", async (e) => {
-          const url = await fetch(`/api/url/${urlData.id}`, {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              "x-token": localStorage.getItem("token"),
-            },
-          });
-
-          const data = await url.json();
-
-          console.log(data);
-
-          if (data?.body) {
-            document.querySelector(`#id-${urlData.id}`).remove();
-          }
-        });
-
-        const tdEdit = document.createElement("td");
-        const editButton = document.createElement("button");
-        editButton.innerHTML = "Edit";
-        editButton.addEventListener("click", async (e) => {
-          const url = await fetch(`/api/url/${urlData.id}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              "x-token": localStorage.getItem("token"),
-            },
-            body: JSON.stringify({
-              code: codeInput.value,
-              long_url: longUrlInput.value,
-            }),
-          });
-
-          const data = await url.json();
-
-          console.log(data);
-
-          if (data?.body) {
-            editUrl(data.body.url);
-          }
-        });
-
-        idP.innerHTML = urlData.id;
-        longUrlInput.value = urlData.long_url;
-        codeInput.value = urlData.code;
-        tdEdit.appendChild(editButton);
-        tdDelete.appendChild(deleteButton);
-
-        tdGo.innerHTML = `<a href="${window.location.origin}/r/${urlData.code}" target="__blank">Go</a>`;
-
-        tr.appendChild(tdId);
-        tr.appendChild(tdLongUrl);
-        tr.appendChild(tdCode);
-        tr.appendChild(tdEdit);
-        tr.appendChild(tdDelete);
-
-        tr.appendChild(tdGo);
-
-        BodytableOfUrl.appendChild(tr);
-      }
-    };
-
-    const addData = (url) => {
-      const BodytableOfUrl = document.querySelector("#urlData");
-
-      const tr = document.createElement("tr");
-      tr.id = `id-${url.id}`;
-
-      const tdId = document.createElement("td");
-      const idP = document.createElement("p");
-      tdId.appendChild(idP);
-
-      const tdLongUrl = document.createElement("td");
-      const longUrlInput = document.createElement("input");
-      tdLongUrl.appendChild(longUrlInput);
-
-      const tdCode = document.createElement("td");
-      const codeInput = document.createElement("input");
-      tdCode.appendChild(codeInput);
-
-      const tdGo = document.createElement("td");
-
-      const tdDelete = document.createElement("td");
-      const deleteButton = document.createElement("button");
-      deleteButton.innerHTML = "Delete";
-      deleteButton.addEventListener("click", async (e) => {
-        const urlData = await fetch(`/api/url/${url.id}`, {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            "x-token": localStorage.getItem("token"),
-          },
-        });
-
-        const data = await urlData.json();
-
-        console.log(data);
-
-        if (data?.body) {
-          document.querySelector(`#id-${url.id}`).remove();
-        }
-      });
-
-      const tdEdit = document.createElement("td");
-      const editButton = document.createElement("button");
-      editButton.innerHTML = "Edit";
-
-      editButton.addEventListener("click", async (e) => {
-        const urlData = await fetch(`/api/url/${url.id}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "x-token": localStorage.getItem("token"),
-          },
-          body: JSON.stringify({
-            code: codeInput.value,
-            long_url: longUrlInput.value,
-          }),
-        });
-
-        const data = await urlData.json();
-
-        console.log(data);
-
-        if (data?.body) {
-          editUrl(data.body.url);
-        }
-      });
-
-      idP.innerHTML = url.id;
-      longUrlInput.value = url.long_url;
-      codeInput.value = url.code;
-      tdEdit.appendChild(editButton);
-      tdDelete.appendChild(deleteButton);
-
-      tdGo.innerHTML = `<a href="${window.location.origin}/r/${url.code}" target="__blank">Go</a>`;
-
-      tr.appendChild(tdId);
-      tr.appendChild(tdLongUrl);
-      tr.appendChild(tdCode);
-      tr.appendChild(tdEdit);
-      tr.appendChild(tdDelete);
-
-      tr.appendChild(tdGo);
-
-      BodytableOfUrl.appendChild(tr);
-    };
-
-    const editUrl = (url) => {
-      console.log(url);
-
-      const tr = document.querySelector(`#id-${url.id}`);
-
-      const idP = tr.querySelector("p");
-      const longUrlInput = tr.querySelector("input");
-      const codeInput = tr.querySelectorAll("input")[1];
-      const redirect = tr.querySelector("a");
-
-      idP.innerHTML = url.id;
-      longUrlInput.value = url.long_url;
-      codeInput.value = url.code;
-      redirect.href = `${window.location.origin}/r/${url.code}`;
-    };
-
-    (async () => {
-      await refresh();
-    })();
-  </script>
 </html>
