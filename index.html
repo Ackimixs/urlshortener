@@ -8,7 +8,7 @@
   <body>
     <header>
       <h1>Urlsh</h1>
-      <button type="button" class="goToDash" onclick="console.log(true)">
+      <button type="button" class="goToDash">
         DASHBAORD
       </button>
     </header>
@@ -48,7 +48,6 @@
       let code = document.querySelector("#code").value;
 
       if (long_url && code) {
-          console.log(long_url, code);
 
           const data = await fetch('/api/url', {
             method: 'POST',
@@ -63,9 +62,10 @@
 
           const urls = await data.json();
 
-          console.log(urls);
-
           await createUrl(urls.body.url);
+
+          document.querySelector("#longUrl").value = "";
+          document.querySelector("#code").value = "";
       }
     })
 
@@ -85,8 +85,6 @@
         })
 
         const urls = await data.json();
-
-        console.log(urls.body.url);
 
         for (const u of urls.body.url) {
           await createUrl(u);
