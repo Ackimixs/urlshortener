@@ -8,9 +8,7 @@
   <body>
     <header>
       <h1>Urlsh</h1>
-      <button type="button" class="goToDash">
-        DASHBAORD
-      </button>
+      <button type="button" class="goToDash">DASHBAORD</button>
     </header>
     <main>
       <h2 class="text-white">Dashboard</h2>
@@ -32,43 +30,39 @@
           </svg>
         </button>
       </form>
-      <div id="urlList" class="hide-scrollbar">
-
-      </div>
+      <div id="urlList" class="hide-scrollbar"></div>
     </main>
   </body>
 
   <script defer>
     const form = document.querySelector(".creator");
 
-    form.addEventListener('submit', async (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       let long_url = document.querySelector("#longUrl").value;
       let code = document.querySelector("#code").value;
 
       if (long_url && code) {
+        const data = await fetch("/api/url", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            long_url,
+            code,
+          }),
+        });
 
-          const data = await fetch('/api/url', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              long_url,
-              code
-            })
-          })
+        const urls = await data.json();
 
-          const urls = await data.json();
+        await createUrl(urls.body.url);
 
-          await createUrl(urls.body.url);
-
-          document.querySelector("#longUrl").value = "";
-          document.querySelector("#code").value = "";
+        document.querySelector("#longUrl").value = "";
+        document.querySelector("#code").value = "";
       }
-    })
-
+    });
 
     const refresh = async () => {
       const container = document.querySelector("#urlList");
@@ -77,19 +71,19 @@
         container.removeChild(container.firstChild);
       }
 
-        const data = await fetch('/api/url', {
-            method: 'GET',
-            headers: {
-            'Content-Type': 'application/json'
-            },
-        })
+      const data = await fetch("/api/url", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-        const urls = await data.json();
+      const urls = await data.json();
 
-        for (const u of urls.body.url) {
-          await createUrl(u);
-        }
-    }
+      for (const u of urls.body.url) {
+        await createUrl(u);
+      }
+    };
 
     const createUrl = async (url) => {
       const container = document.querySelector("#urlList");
@@ -106,7 +100,8 @@
       urlCode.target = "_blank";
       urlCode.classList.add("url-code");
       urlCode.id = `code-${url.id}`;
-      urlCode.innerHTML = `${window.location.host}/r<span class="colored-text">/${url.code}</span>`;4
+      urlCode.innerHTML = `${window.location.host}/r<span class="colored-text">/${url.code}</span>`;
+      4;
 
       const urlCodeFormDiv = document.createElement("div");
       urlCodeFormDiv.classList.add("url-code-form");
@@ -164,7 +159,7 @@
               />
               </svg>
           `;
-      editButton.addEventListener('click', () => {
+      editButton.addEventListener("click", () => {
         editButton.hidden = true;
         saveButton.hidden = false;
 
@@ -173,7 +168,7 @@
 
         urlLongUrl.hidden = true;
         urlLongUrlForm.hidden = false;
-      })
+      });
 
       const saveButton = document.createElement("button");
       saveButton.type = "button";
@@ -182,24 +177,24 @@
       saveButton.innerHTML = `
           <svg xmlns="http://www.w3.org/2000/svg" width="39" height="39" viewBox="0 0 39 39" fill="none">
             <path d="M27.6251 4.875H8.12512C6.32137 4.875 4.87512 6.3375 4.87512 8.125V30.875C4.87512 32.6625 6.32137 34.125 8.12512 34.125H30.8751C32.6626 34.125 34.1251 32.6625 34.1251 30.875V11.375L27.6251 4.875ZM30.8751 30.875H8.12512V8.125H26.2764L30.8751 12.7237V30.875ZM19.5001 19.5C16.8026 19.5 14.6251 21.6775 14.6251 24.375C14.6251 27.0725 16.8026 29.25 19.5001 29.25C22.1976 29.25 24.3751 27.0725 24.3751 24.375C24.3751 21.6775 22.1976 19.5 19.5001 19.5ZM9.75012 9.75H24.3751V16.25H9.75012V9.75Z" fill="black"/>
-          </svg>`
+          </svg>`;
       saveButton.hidden = true;
-      saveButton.addEventListener('click', async () => {
+      saveButton.addEventListener("click", async () => {
         const id = url.id;
 
         const longUrl = urlLongUrlForm.value;
         const code = urlCodeForm.value;
 
         const d = await fetch(`/api/url/${id}`, {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             long_url: longUrl,
-            code: code
-          })
-        })
+            code: code,
+          }),
+        });
 
         const urls = await d.json();
 
@@ -217,7 +212,7 @@
 
         saveButton.hidden = true;
         editButton.hidden = false;
-      })
+      });
 
       const copyButton = document.createElement("button");
       copyButton.type = "button";
@@ -238,10 +233,12 @@
               </svg>
           `;
 
-      copyButton.addEventListener('click', (e) => {
+      copyButton.addEventListener("click", (e) => {
         e.preventDefault();
 
-        navigator.clipboard.writeText(`${window.location.origin}/r/${url.code}`);
+        navigator.clipboard.writeText(
+          `${window.location.origin}/r/${url.code}`
+        );
       });
 
       const deleteButton = document.createElement("button");
@@ -254,22 +251,22 @@
               </svg>
           `;
 
-      deleteButton.addEventListener('click', async (e) => {
+      deleteButton.addEventListener("click", async (e) => {
         e.preventDefault();
 
         const d = await fetch(`/api/url/${url.id}`, {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
-            'Content-Type': 'application/json'
-          }
-        })
+            "Content-Type": "application/json",
+          },
+        });
 
         const urls = await d.json();
 
-        if (urls.body.url) {
+        if (urls.body) {
           urlItem.remove();
         }
-      })
+      });
 
       iconList.appendChild(editButton);
       iconList.appendChild(saveButton);
@@ -280,8 +277,7 @@
       urlItem.appendChild(iconList);
 
       container.appendChild(urlItem);
-    }
-
+    };
 
     (async () => {
       await refresh();
@@ -510,10 +506,10 @@
     }
 
     .urlInfo {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-start;
     }
 
     .url-code {
