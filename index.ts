@@ -4,6 +4,12 @@ import { PrismaClient } from "@prisma/client";
 const app = server();
 const prisma = new PrismaClient();
 
+app.get("/favicon.ico", (req, res) => {
+    console.log("GET /favicon.ico");
+
+    res.send(Bun.file("./public/favicon.ico"));
+})
+
 app.get("/api/url", async (req, res) => {
   console.log("GET /api/url");
 
@@ -133,8 +139,10 @@ app.get("/api/url/:id", async (req, res) => {
   res.json({ body: { url } });
 });
 
-app.listen(3000, () => {
-  console.log("Server listening on port 3000");
+app.listen(process.env.PORT as string | 3000, () => {
+  console.log(
+    "Server listening on port " + (process.env.PORT as string | 3000)
+  );
   prisma.$connect();
 });
 
