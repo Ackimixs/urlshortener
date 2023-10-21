@@ -60,9 +60,9 @@ class UrlApiController extends AbstractController
     }
 
     #[Route('/api/url/{id}', name: "url_delete", methods: ['DELETE'])]
-    public function delete(int $id, UrlRepository $urlRepository, EntityManagerInterface $entityManager): JsonResponse
+    public function delete(string $id, UrlRepository $urlRepository, EntityManagerInterface $entityManager): JsonResponse
     {
-        $url = $urlRepository->findOneById($id);
+        $url = $urlRepository->findOneById(intval($id));
 
         if (!$url) {
             return new JsonResponse(['error' => 'Url not found'], 404);
@@ -91,6 +91,7 @@ class UrlApiController extends AbstractController
         $entityManager->persist($url);
         $entityManager->flush();
 
-        return new JsonResponse(['body' => ['url' => 'Url updated']]);
+        return new JsonResponse(['body' => ['url' => $url->getAll()]]);
+
     }
 }
