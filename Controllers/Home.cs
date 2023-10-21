@@ -10,7 +10,7 @@ public class Home : ControllerBase
     [Produces("text/html")]
     public string Index()
     {
-        var fileContent = System.IO.File.ReadAllText("/home/acki/RiderProjects/HolaTodos/HolaTodos/templates/index.html");
+        var fileContent = System.IO.File.ReadAllText("templates/index.html");
         return fileContent;
     }
     
