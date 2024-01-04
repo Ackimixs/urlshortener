@@ -21,3 +21,4 @@ for the moment :
 - [x] symfony
 - [X] c#
 - [x] ruby on rails
+- [ ] qt6
